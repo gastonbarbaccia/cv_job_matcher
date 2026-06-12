@@ -1,0 +1,78 @@
+════════════════════════════════════════════════════════
+  CV JOB MATCHER — LinkedIn + Claude AI
+════════════════════════════════════════════════════════
+
+INSTALACIÓN (ya hecho si corriste esto una vez):
+  pip3 install pdfplumber anthropic linkedin-api --break-system-packages
+
+────────────────────────────────────────────────────────
+PASO 1: Configurar credenciales
+────────────────────────────────────────────────────────
+
+  export ANTHROPIC_API_KEY="sk-ant-..."        # desde console.anthropic.com
+  export LINKEDIN_EMAIL="tu@email.com"
+  export LINKEDIN_PASSWORD="tu_contraseña"
+
+  Tip: Agregalas a ~/.bashrc para no repetirlas cada vez:
+    echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.bashrc
+
+────────────────────────────────────────────────────────
+PASO 2: Ejecutar
+────────────────────────────────────────────────────────
+
+  # Búsqueda básica (Argentina, 30 empleos)
+  python3 cv_job_matcher.py --cv /ruta/a/mi_cv.pdf --location "Argentina"
+
+  # Con keywords extra + más resultados
+  python3 cv_job_matcher.py --cv mi_cv.pdf --keywords "DevSecOps Python" --limit 50
+
+  # Buenos Aires, umbral de match más alto
+  python3 cv_job_matcher.py --cv mi_cv.pdf --location "Buenos Aires" --min-score 60
+
+  # Guardar en archivo específico
+  python3 cv_job_matcher.py --cv mi_cv.pdf --output mis_matches_julio.html
+
+  # Búsqueda remota global
+  python3 cv_job_matcher.py --cv mi_cv.pdf --location "Remote" --keywords "Security Engineer"
+
+────────────────────────────────────────────────────────
+PASO 3: Ver el reporte
+────────────────────────────────────────────────────────
+
+  xdg-open mi_cv_matches.html
+  # o abrir el archivo HTML en el navegador directamente
+
+────────────────────────────────────────────────────────
+PARÁMETROS DISPONIBLES
+────────────────────────────────────────────────────────
+
+  --cv         REQUERIDO  Ruta al PDF del CV
+  --location   OPCIONAL   Ciudad/país para filtrar (default: sin filtro)
+  --keywords   OPCIONAL   Keywords extra para agregar a la búsqueda
+  --limit      OPCIONAL   Cuántos empleos buscar máximo (default: 30)
+  --output     OPCIONAL   Nombre del HTML de salida
+  --min-score  OPCIONAL   Score mínimo para aparecer en el reporte (0-100, default: 50)
+
+════════════════════════════════════════════════════════
+CÓMO FUNCIONA
+════════════════════════════════════════════════════════
+
+  1. Lee el PDF y extrae el texto del CV
+  2. Claude analiza el CV y extrae: skills, experiencia, título, idiomas,
+     roles objetivo y keywords de búsqueda
+  3. Busca en LinkedIn usando tu cuenta autenticada con múltiples queries
+  4. Claude evalúa cada oferta vs. tu CV y asigna un score 0-100
+  5. Genera un reporte HTML con las mejores ofertas rankeadas,
+     skills coincidentes, gaps y recomendaciones personalizadas
+
+════════════════════════════════════════════════════════
+NOTA SOBRE LINKEDIN
+════════════════════════════════════════════════════════
+
+  Este script usa la librería linkedin-api (no oficial).
+  - Usá tu cuenta personal de LinkedIn
+  - No abuses con límites muy altos (--limit > 100)
+  - Si LinkedIn pide verificación, resolvela manualmente primero
+  - Si da error de auth, esperá unos minutos y reintentá
+
+════════════════════════════════════════════════════════
